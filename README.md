@@ -1,12 +1,32 @@
-# realme-news
-Maintained by [@flandolf](https://github.com/flandolf), since he deleted the repo so I decided to reupload it as I am currently the one who hosts it.
+# GSMArena News Fetcher
+
+Originally developed by [@flandyw](https://github.com/flandyw). Reuploaded and maintained by me after the original repository was removed.
 
 ## About
 
-This a Discord webhook that automatically fetches realme news from GSMArena, then sends the news URL to the set channel.
+A Discord webhook service that automatically fetches news from GSMArena every 10 minutes and posts new articles to configured Discord channels. Supports multiple search queries and webhooks, with persistent history to prevent duplicate posts.
 
 ## How to Use
 
-1. Create your own Discord webhook via server settings.
-2. Copy the webhook URL and extract the number string and the random text string to ID and TOKEN field in in the `.env` file
-3. Launch the code by entering `node index.js`
+1. Install dependencies using `npm install`.
+2. Create a Discord webhook through your server settings.
+3. Copy the webhook URL into the `DISCORD_WEBHOOK_URL` variable in `.env`.
+4. Modify `FEEDS` in `index.js` to configure your news subscriptions:
+
+   ```js
+   const FEEDS = [
+     {
+       query: "realme",
+       webhookUrl: process.env.DISCORD_WEBHOOK_URL,
+       historyFile: "seen-links.json",
+       footer: "realme News",
+       color: 0xff0000,
+     },
+   ];
+   ```
+
+   Additional subscriptions can be added to the array with their own webhook URLs and history files.
+
+5. Start the service using `node index.js`.
+
+On the first launch, existing articles are recorded without being posted. Subsequent checks only publish unseen articles, with older history entries automatically removed to limit storage usage.
