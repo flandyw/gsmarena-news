@@ -1,7 +1,7 @@
 {
-  "name": "realme-news",
+  "name": "gsmarena-news",
   "version": "1.0.0",
-  "description": "discordjs webhook and scraper",
+  "description": "A Discord webhook that scrapes news from GSMArena",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -13,11 +13,7 @@
   "author": "raymond-1227",
   "license": "MIT",
   "dependencies": {
-    "@dumpy/andylib": "^3.2.1",
-    "axios": "^1.6.5",
-    "cheerio": "^1.0.0-rc.12",
-    "discord-api-types": "^0.37.45",
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1"
+    "cheerio": "^1.2.0",
+    "discord.js": "^14.28.1"
   }
 }
