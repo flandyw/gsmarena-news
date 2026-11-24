@@ -1,2 +1,4 @@
 node_modules/
 .env
+seen-*.json
+seen-*.json.tmp
