@@ -1,8 +1,22 @@
-import { sendEmbed } from "./discord.js";
-import { fetchNews, getPreviewImage } from "./gsmarena.js";
-import { HttpError } from "./http.js";
+import { sendEmbed } from "./discord.ts";
+import {
+  errorMessage,
+  fetchNews,
+  getPreviewImage,
+  type Article,
+} from "./gsmarena.ts";
+import type { History } from "./history.ts";
+import { HttpError } from "./http.ts";
 
-async function sendNews(feed, { title, link, thumbnail }) {
+export interface Feed {
+  query: string;
+  webhookUrl: string;
+  footer: string;
+  color: number;
+  history: History;
+}
+
+async function sendNews(feed: Feed, { title, link, thumbnail }: Article) {
   const image = (await getPreviewImage(link)) ?? thumbnail;
 
   await sendEmbed(feed.webhookUrl, {
@@ -15,7 +29,7 @@ async function sendNews(feed, { title, link, thumbnail }) {
   });
 }
 
-export async function checkFeed(feed, { signal } = {}) {
+export async function checkFeed(feed: Feed, signal?: AbortSignal) {
   const { query, history } = feed;
 
   await history.flush();
@@ -41,7 +55,9 @@ export async function checkFeed(feed, { signal } = {}) {
       // Discord rejected this embed; retrying it would block every later article.
       if (!(error instanceof HttpError) || error.status !== 400) throw error;
 
-      console.error(`[${query}] Skipped: ${article.title} (${error.message})`);
+      console.error(
+        `[${query}] Skipped: ${article.title} (${errorMessage(error)})`,
+      );
       await history.remember(article.link);
       continue;
     }

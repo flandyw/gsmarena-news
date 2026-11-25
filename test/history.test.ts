@@ -2,12 +2,12 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { test } from "node:test";
-import { openHistory } from "../history.js";
+import { test } from "bun:test";
+import { openHistory } from "../history.ts";
 
 const tempFile = async () =>
   join(await mkdtemp(join(tmpdir(), "history-")), "seen.json");
-const read = async (file) => JSON.parse(await readFile(file, "utf8"));
+const read = async (file: string) => JSON.parse(await readFile(file, "utf8"));
 
 test("starts uninitialized, persists and trims to the limit", async () => {
   const file = await tempFile();
@@ -25,7 +25,7 @@ test("starts uninitialized, persists and trims to the limit", async () => {
 
 test("matches by key", async () => {
   const history = await openHistory(await tempFile(), 10, (link) =>
-    link.at(-1)
+    link.slice(-1),
   );
 
   await history.remember("old-slug-1");

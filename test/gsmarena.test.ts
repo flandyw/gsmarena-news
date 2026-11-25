@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import { test } from "node:test";
-import { articleKey, parseNews } from "../gsmarena.js";
+import { test } from "bun:test";
+import { articleKey, parseNews } from "../gsmarena.ts";
 
-const item = (href, title, img = "") => `
+const item = (href: string, title: string, img = "") => `
 <div class="news-item">
   <div class="news-item-media-wrap left"><a href="${href}">${img}</a></div>
   <a href="${href}"><h3>${title}</h3></a>
@@ -10,10 +10,14 @@ const item = (href, title, img = "") => `
 
 test("parses articles oldest first with absolute links", () => {
   const articles = parseNews(
-    item("new-news-2.php#c", "New", '<img src="https://fdn.gsmarena.com/b.jpg">') +
+    item(
+      "new-news-2.php#c",
+      "New",
+      '<img src="https://fdn.gsmarena.com/b.jpg">',
+    ) +
       item("old-news-1.php", " Old ") +
       item("https://evil.example/x-news-3.php", "Offsite") +
-      item("untitled-news-4.php", "")
+      item("untitled-news-4.php", ""),
   );
 
   assert.deepEqual(articles, [
@@ -33,7 +37,7 @@ test("parses articles oldest first with absolute links", () => {
 test("article key survives a renamed slug", () => {
   assert.equal(
     articleKey("https://www.gsmarena.com/a_b-news-75392.php"),
-    articleKey("https://www.gsmarena.com/c_d_e-news-75392.php")
+    articleKey("https://www.gsmarena.com/c_d_e-news-75392.php"),
   );
   assert.equal(articleKey("https://x/other.php"), "https://x/other.php");
 });
